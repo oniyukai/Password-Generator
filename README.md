@@ -3,6 +3,17 @@
 Password Generator is a Python application that enables you to create secure and customized passwords. This repository contains different versions of the generator, each with its own unique features and functionality.
 > [Chinese README.md](README_zh.md)
 
+**Table of Contents (Quick navigation):**
+* [Features](#features)
+* [Installation and Usage](#installation-and-usage)
+* [Versions and Differences](#versions-and-differences)
+  * [v2.2\_23.08.05.py](#v22_230805py)
+  * [GUI v3.1\_23.08.06.py](#gui-v31_230806py)
+  * [v4.0\_23.08.05.py](#v40_230805py)
+  * [GUI v4.0\_23.08.11.py](#gui-v40_230811py)
+* [Common Usage Errors](#common-usage-errors)
+* [Acknowledgments](#acknowledgments)
+
 ## Features
 
 - Generate strong and random passwords with customizable settings.
