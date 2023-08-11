@@ -21,11 +21,11 @@ Password Generator is a Python application that enables you to create secure and
 
 ### v2.2_23.08.05.py
 
-This version is a command-line password generator with basic features. It allows you to generate passwords based on your preferences for numbers, lowercase letters, uppercase letters, and special characters.
+This version is a command-line password generator with basic features. It allows you to generate passwords based on your preferences for numbers, lowercase letters, uppercase letters, and special characters. Chinese interface is supported by this version.
 
 ### GUI v3.1_23.08.06.py
 
-An enhanced version featuring a graphical user interface (GUI). Easily customize password settings and generate secure passwords with just a few clicks.
+An enhanced version featuring a graphical user interface (GUI). Easily customize password settings and generate secure passwords with just a few clicks. Chinese interface is supported by this version.
 
 ### v4.0_23.08.05.py
 
