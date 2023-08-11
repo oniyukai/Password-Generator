@@ -1,7 +1,7 @@
 # Password-Generator
 
 Password Generator是一個使用 Python 開發的應用程式，讓您可以建立安全且符合您需求的自訂密碼。本密碼生成器包含不同版本，每個版本都有不同的特色和功能。
-> [English README.md](README.md)
+> [English README.md](https://github.com/oniyukai/Password-Generator)
 
 ## 特點
 
