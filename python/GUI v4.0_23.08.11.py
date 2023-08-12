@@ -4,7 +4,7 @@ from tkinter import ttk
 
 max_sets = 9 #生成一次密碼最大組數,預設為9
 max_sections = 3 #密碼結構最大分節(段)數,預設為3
-max_length = 9 #密碼結構各分節(段)最大長度,預設為9
+max_length = 9 #密碼結構各分節(段)長度循環,預設為9
 
 
 def generate_password_cmd(): #輸出密碼並計算總長度
