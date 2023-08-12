@@ -36,7 +36,7 @@ This version is a command-line password generator with basic features and suppor
 
 ### GUI v3.1_23.08.06.py
 
-An enhanced version featuring a graphical user interface (GUI) and supports Chinese. Easily customize password settings and generate secure passwords with just a few clicks.
+An enhanced version featuring a graphical user interface (GUI) and supporting Chinese. Easily customize password settings and generate secure passwords with just a few clicks.
 
 ### v4.0_23.08.05.py
 
