@@ -8,11 +8,8 @@ max_section = 4
 while True:
     sets = input('\n\nInput several sets of generated passwords: ')
     sections = input(f'Input the several sections of the password (Up to {int(max_section)} sections): ')
-    while True:
-        if int(sections) > max_section or int(sections) < 1:
-            sections = input('Error, please input another response again: ')
-        else:
-            break
+    while int(sections) > max_section or int(sections) < 1:
+        sections = input('Error, please input another response again: ')
     sections = ['' for i in range(int(sections))]
     sections_length = []
     for i in range(len(sections)):
