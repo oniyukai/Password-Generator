@@ -2,11 +2,11 @@ import random
 import tkinter as tk
 
 # 定義函式
-def click_generated():
+def click_generate():
     output_text.insert(0.0, '\n')
-    for i in range(int(sets_entry.get())):
+    for _ in range(int(sets_entry.get())):
         output_text.insert(0.0, ''.join(random.choices(numbers_var.get() + lowercase_var.get() + uppercase_var.get() + symbols_var.get() + 
-                                                       additions_entry.get(), k=int(length_entry.get())))+'\n')
+                                                       additions_entry.get(), k=int(length_entry.get()))) + '\n')
 
 # tkinter物件
 window = tk.Tk()
@@ -39,7 +39,7 @@ tk.Checkbutton(text=' !@#$%^&*', bg='#262626', fg='#ffffff', selectcolor='#00000
 tk.Label(text=' 輸入額外字符:', bg='#262626', fg='#ffffff', font=15, width=15, anchor='w').grid(row=6, column=0)
 additions_entry = tk.Entry(bg='#ffffff', fg='#000000', font=15, width=20)
 additions_entry.grid(row=6, column=1)
-tk.Button(text='生 成', bg='#666666', fg='#ffffff',width=10, font=10, command=click_generated).grid(row=7, column=0)
+tk.Button(text='生 成', bg='#666666', fg='#ffffff',width=10, font=10, command=click_generate).grid(row=7, column=0)
 tk.Button(text='清 除', bg='#666666', fg='#ffffff',width=10, font=10, command=lambda: output_text.delete(0.0, 'end')).grid(row=7, column=1)
 
 output_text = tk.Text(bg='#000000', fg='#ffffff', font=10, width=35, height=15, bd=5)
