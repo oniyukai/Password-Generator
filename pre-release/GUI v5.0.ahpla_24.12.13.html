@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Password Generator GUI</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <!-- v5.0_ahpla 2024.12.05 => 2024.12.13 -->
+    <style>
+        :root {
+            --maxSegments: 3;
+        }
+        body {
+            font-family: Consolas, 'Courier New', 'Microsoft JhengHei', monospace;
+            margin: 20px;
+            /* font-size: 16px; */
+        }
+        button {
+            font-size: 14px;
+            font-family: Consolas, monospace;
+        }
+        header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        header div {
+            flex: 1;
+        }
+        header button {
+            width: 136px;
+        }
+        header input[type="number"] {
+            width: 128px;
+            text-align: center;
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+        header input[type="number"]::-webkit-inner-spin-button,
+        header input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+        }
+        main {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        label {
+            margin-right: 8px;
+        }
+        .controls {
+            flex: 1;
+            flex-basis: 421px;
+        }
+        .output {
+            flex: 1;
+            flex-basis: 445px;
+            width: 100%;
+        }
+        .section {
+            margin-bottom: 16px;
+        }
+        input[type="range"] {
+            width: calc(54.5px * var(--maxSegments) - 35px);
+            height: 4px;
+            margin-left: 20px;
+            padding: 6px 0px 6px 0px;
+        }
+        div[id="OutputMimicsTextarea"] {
+            width: auto;
+            /* width: min(90vw, 90%); */
+            height: 80vh;
+            /* background-color: #1F1F1F; */
+            margin-top: 5px;
+            overflow: auto;
+            overflow-wrap: break-word;
+            line-break: anywhere;
+            white-space: pre;
+        }
+        span {
+            display: block;
+        }
+        input[type="text"] {
+            width: 48px;
+            text-align: center;
+        }
+        input[type="number"] {
+            width: 48px;
+            text-align: center;
+        }
+        .label-frame {
+            border: 2px solid rgb(211, 211, 211);
+            border-radius: 5px;
+            padding: 10px;
+            position: relative;
+            margin: 20px;
+            /* width: min(90vw, 90%); */
+        }
+        .label-frame .label-frame-title {
+            position: absolute;
+            top: -12px;
+            left: 10px;
+            background-color: white;
+            padding: 0 5px;
+        }
+        .checkboxText {
+            background-color: rgb(239, 239, 239);
+            border: 1px solid rgb(118, 118, 118);
+            display: inline-block;
+            user-select: none;
+            border-radius: 4px;
+            padding: 2px 8px;
+            cursor: pointer;
+            align-items: center;
+            font-size: 14px;
+        }
+        .includeOption label {
+            margin-right: 20px;
+        }
+        .includeOption[id="includeAdditionDiv"] label {
+            margin-right: 48px;
+        }
+        .includeOption input[type="checkbox"] {
+            width: 48px;
+            margin-bottom: 8px;
+        }
+        .filterOption input {
+            margin-top: 16px;
+        }
+        .filterOption input[type="text"] {
+            width: 48%;
+        }
+        .filterOption .checkboxText {
+            opacity: 0.5;
+            cursor: default;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div><h1>Password Generator GUI</h1></div>
+        <div>
+            <p>
+                Version 5.0.ahpla
+                <br>
+                <a href="https://github.com/oniyukai/Password-Generator">Github.com</a>
+                <br>
+                
+            </p>
+        </div>
+        <div>
+            <button onclick="window.location.href = window.location.href">↻ Reload Page</button>
+            <input type="number" id="maxSetsInput" placeholder="Max Sets: 9">
+            <input type="number" id="maxSegmentsInput">
+            <input type="number" id="maxLengthInput" placeholder="Max Length: 64">
+        </div>
+    </header>
+
+    <main>
+        <div class="controls">
+            <div class="section">
+                <label id="setsLabel"></label>
+                <input type="range" id="setsSlider" min="1" max="9" value="1" oninput="setsSliderOninput()">
+            </div>
+            <div class="section">
+                <label id="segmentsLabel"></label>
+                <input type="range" id="segmentsSlider" min="1" max="3" value="1" oninput="segmentsSliderOninput()">
+            </div>
+            <div class="section" id="lengthsDiv">
+                <label id="lengthsLabel"></label>
+            </div>
+
+            <div class="label-frame">
+                <div class="label-frame-title">Include</div>
+                <div class="includeOption" id="includeNumberDiv">
+                </div>
+                <div class="includeOption" id="includeLowercaseDiv">
+                </div>
+                <div class="includeOption" id="includeUppercaseDiv">
+                </div>
+                <div class="includeOption" id="includeBasicSymbolDiv">
+                </div>
+                <div class="includeOption" id="includeAdvancedSymbolDiv">
+                </div>
+                <div class="includeOption" id="includeAdditionDiv">
+                </div>
+            </div>
+
+            <div class="label-frame">
+                <div class="label-frame-title">Filter</div>
+                <label class="filterOption">
+                    <input type="checkbox" id="duplicationsCheckbox">
+                    <input type="number" id="duplicationsCharactersInput" placeholder="ALL" disabled="false">
+                    Characters For Each Without 
+                    <input type="number" id="duplicationsDuplicationsInput" placeholder="2" disabled="false">
+                    Duplications
+                    <label class="checkboxText" id="duplicationsCheckboxText"><input type="checkbox" id="duplicationsIgnoreCase" disabled="false" hidden>Ignore Case</label>
+                </label>
+                <br>
+                <label class="filterOption">
+                    <input type="checkbox" id="sequentialLettersCheckbox">
+                    <input type="number" id="sequentialLettersInput" placeholder="MAX" disabled="false">
+                    Sequential Letters
+                    <label class="checkboxText" id="sequentialLettersCheckboxText"><input type="checkbox" id="sequentialLettersIgnoreCase" disabled="false" hidden>Ignore Case</label>
+                </label>
+                <br>
+                <label class="filterOption">
+                    <input type="checkbox" id="sequentialNumbersCheckbox">
+                    <input type="number" id="sequentialNumbersInput" placeholder="MAX" disabled="false">
+                    Sequential Numbers
+                </label>
+                <br>
+                <label class="filterOption">
+                    <input type="checkbox" id="excludeCharStringCheckbox">
+                    Exclude Characters or Strings
+                    <input type="text" id="excludeCharStringInput" placeholder="Default enter exclude characters, to exclude strings use ${...}&" disabled="false">
+                </label>
+            </div>
+        </div>
+
+        <div class="output">
+            <div class="label-frame">
+                <div class="label-frame-title">
+                    <button onclick="generatePasswordButtonClick()">Generate Password</button>
+                    <button onclick='document.getElementById("OutputMimicsTextarea").innerHTML = ""'>Clear Output</button>
+                    <label class="checkboxText" id="wordWrapCheckboxText" on><input type="checkbox" id="wordWrapCheckbox" hidden>Word Wrap</label>
+                </div>
+                <div id="OutputMimicsTextarea">
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        function randomChoices(charset, k) {
+            let ArrayType, maxValue;
+            if (charset.length <= 255) {
+                ArrayType = Uint8Array;
+                maxValue = 256;
+            } else if (charset.length <= 65535) {
+                ArrayType = Uint16Array;
+                maxValue = 65536;
+            } else {
+                ArrayType = Uint32Array;
+                maxValue = 4294967296;
+            }
+            const passwordChars = [];
+            const charsetLength = charset.length;
+            for (let i = 0; i < k; i++) {
+                let randomValue;
+                while (true) {
+                const tempArray = new ArrayType(1);
+                crypto.getRandomValues(tempArray);
+                randomValue = tempArray[0] - (maxValue % charsetLength);
+                if (randomValue >= 0) break;
+                }
+                passwordChars.push(charset[randomValue % charsetLength]);
+            }
+            return passwordChars.join("");
+        }
+
+        function passwordPassFilter(password) {
+            if (duplicationsCheckbox.checked) {
+                const str = duplicationsIgnoreCase.checked ? password.toLowerCase() : password;
+                const eachCharsLen = (duplicationsCharactersInput.value) == "" ? getlengthsInputValuesTotal() : parseInt(duplicationsCharactersInput.value, 10);
+                const duplicationsCount = (duplicationsDuplicationsInput.value) == "" ? 2 : parseInt(duplicationsDuplicationsInput.value, 10);
+                const charCount = {};
+                for (let i = 0; i < eachCharsLen; i++) {
+                    const char = str[i];
+                    charCount[char] = (charCount[char] || 0) + 1;
+                }
+                if (Object.values(charCount).some(count => count >= duplicationsCount)) return false;
+                for (let i = eachCharsLen; i < str.length; i++) {
+                    const newChar = str[i];
+                    const oldChar = str[i - eachCharsLen];
+                    charCount[newChar] = (charCount[newChar] || 0) + 1;
+                    if (charCount[oldChar] === 1) {
+                        delete charCount[oldChar];
+                    } else {
+                        charCount[oldChar]--;
+                    }
+                    if (Object.values(charCount).some(count => count >= duplicationsCount)) return false;
+                }
+            }
+            if (sequentialLettersCheckbox.checked && password.length>1) {
+                const sequentialLen = (sequentialLettersInput.value == "") ? Math.min(getlengthsInputValuesTotal(), 26) : parseInt(sequentialLettersInput.value, 10);
+                if (sequentialLettersIgnoreCase.checked) {
+                    const regions = password.toLowerCase().match(new RegExp(`[a-z]{${sequentialLen},}`, "g")) || [];
+                    if (hasSequentialSubstring(regions, sequentialLen, "abcdefghijklmnopqrstuvwxyz")) return false;
+                } else {
+                    let regions = password.match(new RegExp(`[a-z]{${sequentialLen},}`, "g")) || [];
+                    if (hasSequentialSubstring(regions, sequentialLen, "abcdefghijklmnopqrstuvwxyz")) return false;
+                    regions = password.match(new RegExp(`[A-Z]{${sequentialLen},}`, "g")) || [];
+                    if (hasSequentialSubstring(regions, sequentialLen, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")) return false;
+                }
+            }
+            if (sequentialNumbersCheckbox.checked && password.length>1){
+                const sequentialLen = (sequentialNumbersInput.value == "") ? Math.min(getlengthsInputValuesTotal(), 10) : parseInt(sequentialNumbersInput.value, 10);
+                const regions =  password.match(new RegExp(`[0-9]{${sequentialLen},}`, "g")) || [];
+                if (hasSequentialSubstring(regions, sequentialLen, "0123456789")) return false;
+            }
+            if (excludeCharStringCheckbox.checked) {
+                const matches = Array.from(excludeCharStringInput.value.matchAll(/\${(.*?)}&/g))
+                    .map(match => match[1])
+                    .filter(content => content !== "");
+                const hasMatch = matches.some(substring => password.includes(substring));
+                if (hasMatch) return false;
+            }
+            return true;
+        }
+
+        function hasSequentialSubstring(regions, eachWindowLen, ascending) {
+            const descending = ascending.split('').reverse().join(''); // 降序
+            for (let region of regions) {
+                // if (region.length < n) continue; // 如果區間長度不足 n，跳過
+                let window = region.slice(0, eachWindowLen);
+                if (ascending.includes(window) || descending.includes(window)) {
+                    return true;
+                }
+                for (let i = eachWindowLen; i < region.length; i++) {
+                    window = window.slice(1) + region[i]; // 移除第一個字元，新增下一個字元
+                    if (ascending.includes(window) || descending.includes(window)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        
+        const maxSetsInput = document.getElementById("maxSetsInput");
+        maxSetsInput.addEventListener("input", function() {
+            this.value = this.value.replace(/[^0-9]/g, "");
+        });
+        maxSetsInput.addEventListener("keydown", function(event) {
+            if (event.key === "Enter" && this.value != "") {
+                maxSets = Math.max(this.value, 9);
+                setsSlider.max = maxSets;
+                this.value = "";
+                this.placeholder = `Max Sets: ${maxSets}`;
+                setsSliderOninput();
+            }
+        });
+
+        const maxSegmentsInput = document.getElementById("maxSegmentsInput");
+        const lengthsDiv = document.getElementById("lengthsDiv");
+        const includeAdditionDiv = document.getElementById("includeAdditionDiv");
+        const includeCheckboxDivs = [[document.getElementById("includeNumberDiv"), "<label>Numbers (0-9)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>", "0123456789"], 
+                                     [document.getElementById("includeLowercaseDiv"), "<label>Lowercase (a-z)&nbsp;&nbsp;&nbsp;&nbsp;</label>", "abcdefghijklmnopqrstuvwxyz"], 
+                                     [document.getElementById("includeUppercaseDiv"), "<label>Uppercase (A-Z)&nbsp;&nbsp;&nbsp;&nbsp;</label>", "ABCDEFGHIJKLMNOPQRSTUVWXYZ"], 
+                                     [document.getElementById("includeBasicSymbolDiv"), "<label>!@#$%^&*-_=+?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>", "!@#$%^&*-_=+?"], 
+                                     [document.getElementById("includeAdvancedSymbolDiv"), "<label>`~()[]{}\\|;':\",<.>/</label>", "`~()[]{}\\|;':\",<.>/"]];
+        maxSegmentsInput.addEventListener("input", function() {
+            this.value = this.value.replace(/[^0-9]/g, "");
+            if (this.value != "") this.value = Math.min(this.value, 16);
+        });
+        maxSegmentsInput.addEventListener("keydown", function(event) {
+            if (event.key === "Enter" && this.value != "") {
+                updateMaxSegments();
+                lengthsInputOnchange();
+                segmentsSliderOninput();
+            }
+        });
+        function updateMaxSegments() {
+            if (maxSegmentsInput.value != "") maxSegments = Math.max(maxSegmentsInput.value, 3);
+            segmentsSlider.max = maxSegments;
+            maxSegmentsInput.value = "";
+            maxSegmentsInput.placeholder = `Max Segments: ${maxSegments}`;
+            document.documentElement.style.setProperty('--maxSegments', maxSegments);
+
+            lengthsDiv.innerHTML = `<label id="lengthsLabel"></label>`;
+            includeAdditionDiv.innerHTML = "<label>Input Additions:</label>";
+            for (let i=0; i<5; i++){
+                includeCheckboxDivs[i][0].innerHTML = includeCheckboxDivs[i][1];
+            }
+            for (let i=0; i<maxSegments; i++) {
+                const inputNumber = document.createElement("input");
+                inputNumber.type = "number";
+                inputNumber.min = 0;
+                inputNumber.max = 9;
+                inputNumber.value = 1;
+                inputNumber.oninput = function() {
+                    // inputNumber.value = inputNumber.value.replace(/[^0-9]/g, ''); //firefox的type: number會把非純數輸入給改回空值
+                    inputNumber.value = Math.min(inputNumber.value, maxLength);
+                }
+                inputNumber.onchange = lengthsInputOnchange;
+                lengthsDiv.appendChild(inputNumber);
+
+                let input = document.createElement("input");
+                input.type = "text";
+                includeAdditionDiv.appendChild(input);
+
+                for (let j=0; j<5; j++){
+                    input = document.createElement("input");
+                    input.type = "checkbox";
+                    input.value = includeCheckboxDivs[j][2];
+                    includeCheckboxDivs[j][0].appendChild(input);
+                }
+            }
+        }
+
+        const maxLengthInput = document.getElementById("maxLengthInput");
+        maxLengthInput.addEventListener("input", function() {
+            this.value = this.value.replace(/[^0-9]/g, "");
+        });
+        maxLengthInput.addEventListener("keydown", function(event) {
+            if (event.key === "Enter" && this.value != "") {
+                maxLength = Math.max(this.value, 1);
+                this.value = "";
+                this.placeholder = `Max Length: ${maxLength}`;
+                updateMaxSegments();
+                lengthsInputOnchange();
+                segmentsSliderOninput();
+            }
+        });
+
+        const setsSlider = document.getElementById("setsSlider");
+        function setsSliderOninput() {
+            document.getElementById("setsLabel").innerHTML = `Quantity of Sets:${String(setsSlider.value).padStart(6, "_").replace(/_/g, "&nbsp;")}`;
+        }
+
+        const segmentsSlider = document.getElementById("segmentsSlider");
+        function segmentsSliderOninput() {
+            document.getElementById("segmentsLabel").innerHTML = `Quantity of Segments:${String(segmentsSlider.value).padStart(2, "_").replace(/_/g, "&nbsp;")}`;
+            const lengthsInputs = Array.from(lengthsDiv.getElementsByTagName("input"));
+            const includeAdditionInputs = Array.from(includeAdditionDiv.getElementsByTagName("input"));
+            for (let i=0; i<maxSegments; i++) {
+                let disabled = !(i < segmentsSlider.value);
+                lengthsInputs[i].disabled = disabled;
+                includeAdditionInputs[i].disabled = disabled;
+                for (let j=0; j<5; j++) {
+                    Array.from(includeCheckboxDivs[j][0].getElementsByTagName("input"))[i].disabled = disabled;
+                }
+            }
+            lengthsInputOnchange();
+        }
+
+        function lengthsInputOnchange() {
+            document.getElementById("lengthsLabel").innerHTML = `Segment Lengths:${("(Σ:" + String(getlengthsInputValuesTotal())).padStart(7, "_").replace(/_/g, "&nbsp;")})`;
+            if (duplicationsCharactersInput.value != "") duplicationsCharactersInput.value = Math.min(duplicationsCharactersInput.value, getlengthsInputValuesTotal());
+            if (sequentialLettersInput.value != "") sequentialLettersInput.value = Math.min(sequentialLettersInput.value, getlengthsInputValuesTotal());
+            if (sequentialNumbersInput.value != "") sequentialNumbersInput.value = Math.min(sequentialNumbersInput.value, getlengthsInputValuesTotal());
+        }
+        function getlengthsInputValuesTotal() {
+            const lengthsInputValues = Array.from(lengthsDiv.getElementsByTagName("input")).map(input => parseInt(input.value));
+            let lengthsInputValuesTotal = 0;
+            for (let i=0; i<segmentsSlider.value; i++) {
+                // let lengthsInputValue = lengthsInputValues[i];
+                // if (isNaN(lengthsInputValue)) lengthsInputValue = 0;
+                // lengthsInputValuesTotal += lengthsInputValue;
+                lengthsInputValuesTotal += lengthsInputValues[i];
+            }
+            return lengthsInputValuesTotal;
+        }
+
+        const duplicationsCheckbox = document.getElementById("duplicationsCheckbox");
+        const duplicationsCharactersInput = document.getElementById("duplicationsCharactersInput");
+        const duplicationsDuplicationsInput = document.getElementById("duplicationsDuplicationsInput");
+        const duplicationsCheckboxText = document.getElementById("duplicationsCheckboxText");
+        const duplicationsIgnoreCase = document.getElementById("duplicationsIgnoreCase");
+        duplicationsCharactersInput.addEventListener("input", function() {
+            this.value = this.value.replace(/[^0-9]/g, "");
+            if (this.value != "") this.value = Math.max(2, Math.min(this.value, getlengthsInputValuesTotal()));
+        });
+        duplicationsDuplicationsInput.addEventListener("input", function() {
+            this.value = this.value.replace(/[^0-9]/g, "");
+            if (this.value != "") this.value = Math.max(2, Math.min(this.value, getlengthsInputValuesTotal()));
+        });
+        duplicationsCheckbox.addEventListener("change", function () {
+            checkboxDisableChange(this, [duplicationsCharactersInput, duplicationsDuplicationsInput, duplicationsIgnoreCase]);
+            checkboxTextDisabledChange(this, duplicationsCheckboxText);
+        });
+        duplicationsIgnoreCase.addEventListener("change", function () {checkboxTextChange(this, duplicationsCheckboxText)});
+        const sequentialLettersCheckbox = document.getElementById("sequentialLettersCheckbox");
+        const sequentialLettersInput = document.getElementById("sequentialLettersInput");
+        const sequentialLettersCheckboxText = document.getElementById("sequentialLettersCheckboxText");
+        const sequentialLettersIgnoreCase = document.getElementById("sequentialLettersIgnoreCase");
+        sequentialLettersInput.addEventListener("input", function() {
+            this.value = this.value.replace(/[^0-9]/g, "");
+            if (this.value != "") this.value = Math.max(2, Math.min(this.value, getlengthsInputValuesTotal(), 26));
+        });
+        sequentialLettersCheckbox.addEventListener("change", function () {
+            checkboxDisableChange(this, [sequentialLettersInput, sequentialLettersIgnoreCase])
+            checkboxTextDisabledChange(this, sequentialLettersCheckboxText)
+        });
+        sequentialLettersIgnoreCase.addEventListener("change", function () {checkboxTextChange(this, sequentialLettersCheckboxText)});
+        const sequentialNumbersCheckbox = document.getElementById("sequentialNumbersCheckbox");
+        const sequentialNumbersInput = document.getElementById("sequentialNumbersInput");
+        sequentialNumbersInput.addEventListener("input", function() {
+            this.value = this.value.replace(/[^0-9]/g, "");
+            if (this.value != "") this.value = Math.max(2, Math.min(this.value, getlengthsInputValuesTotal(), 10));
+        });
+        sequentialNumbersCheckbox.addEventListener("change", function () {checkboxDisableChange(this, [sequentialNumbersInput])});
+        const excludeCharStringCheckbox = document.getElementById("excludeCharStringCheckbox");
+        const excludeCharStringInput = document.getElementById("excludeCharStringInput");
+        excludeCharStringCheckbox.addEventListener("change", function () {checkboxDisableChange(this, [excludeCharStringInput])});
+        function checkboxDisableChange(checkbox, disableElements) {
+            let disabled = !checkbox.checked;
+            for (let disableElement of disableElements){
+                disableElement.disabled = disabled;
+            }
+        }
+
+        const OutputMimicsTextarea = document.getElementById("OutputMimicsTextarea");
+        function generatePasswordButtonClick(){
+            OutputMimicsTextarea.innerHTML = "<br>" + OutputMimicsTextarea.innerHTML;
+            const lengthsInputValues = Array.from(lengthsDiv.getElementsByTagName("input")).map(input => parseInt(input.value));
+            let charsets = [];
+            for (let segment=0; segment<segmentsSlider.value; segment++) {
+                let charset = "";
+                for (let j=0; j<5; j++) {
+                    const includeCheckbox = Array.from(includeCheckboxDivs[j][0].getElementsByTagName("input"))[segment];
+                    if (includeCheckbox.checked) charset += includeCheckbox.value;
+                }
+                charset += Array.from(includeAdditionDiv.getElementsByTagName("input"))[segment].value;
+                if (excludeCharStringCheckbox.checked) {
+                    const extractedChar = excludeCharStringInput.value.replace(/\${.*?}&/g, "");
+                    charset = charset.split("").filter(char => !extractedChar.includes(char)).join("");
+                }
+                if (charset == "") charset = " ";
+                charsets.push(charset);
+            }
+            for (let setTimes=0; setTimes<setsSlider.value; setTimes++) {
+                let password;
+                for (let filterTimes=0; filterTimes <= 256; filterTimes++){
+                    password = "";
+                    if (filterTimes == 256) {
+                        OutputMimicsTextarea.innerHTML = `<span style="color: red;">Over Filtering</span>${OutputMimicsTextarea.innerHTML}`;
+                        return;
+                    }
+                    for (let segment=0; segment<segmentsSlider.value; segment++) {
+                        password += randomChoices(charsets[segment], lengthsInputValues[segment]);
+                    }
+                    if (passwordPassFilter(password)) break;
+                }
+                const newPasswordSpan = document.createElement("span");
+                newPasswordSpan.style = setTimes%2 ? "color: #0075FF" : "color: #4FC1FF";
+                newPasswordSpan.textContent = password;
+                OutputMimicsTextarea.insertBefore(newPasswordSpan, OutputMimicsTextarea.firstChild);
+            }
+        }
+
+        const wordWrapCheckbox = document.getElementById("wordWrapCheckbox");
+        wordWrapCheckbox.addEventListener("change", function () {
+            OutputMimicsTextarea.style.whiteSpace = this.checked ? "pre-wrap" : "pre";
+            checkboxTextChange(this, document.getElementById("wordWrapCheckboxText"));
+        });
+
+        function checkboxTextChange(checkbox, checkboxText) {
+            if (checkbox.checked) {
+                checkboxText.style.color = "white";
+                checkboxText.style.background = "#0075FF";
+                checkboxText.style.border = "1px solid #0075FF";
+            } else {
+                checkboxText.style.color = "black";
+                checkboxText.style.background = "rgb(239, 239, 239)";
+                checkboxText.style.border = "1px solid rgb(118, 118, 118)";
+            }
+        }
+        function checkboxTextDisabledChange(checkbox, checkboxText) {
+            if (checkbox.checked) {
+                checkboxText.style.opacity = 1;
+                checkboxText.style.cursor = "pointer";
+            } else {
+                checkboxText.style.opacity = 0.5;
+                checkboxText.style.cursor = "default";
+            }
+        }
+
+        // 初始化
+        let maxSets = 9;
+        let maxSegments = 3;
+        let maxLength = 64;
+        updateMaxSegments();
+        setsSliderOninput();
+        segmentsSliderOninput();
+        lengthsInputOnchange();
+    </script>
+</body>
+</html>

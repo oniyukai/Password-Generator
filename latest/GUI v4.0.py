@@ -2,7 +2,7 @@ import random, webbrowser, sys
 import tkinter as tk
 from tkinter import ttk
 
-MAS_SETS = 9 #生成一次密碼最大組數,預設為9
+MAX_SETS = 9 #生成一次密碼最大組數,預設為9
 MAX_SECTIONS = 3 #密碼結構最大分節(段)數,預設為3
 MAX_LENGTH = 9 #密碼結構各分節(段)長度循環,預設為9
 
@@ -40,7 +40,7 @@ def about_cmd(): #關閉'About'功能，開啟'about_window'視窗
     about_window.resizable(False, False)
     about_window.protocol('WM_DELETE_WINDOW', func=about_window_exit)
     tk.Label(about_window, bitmap='info').place(relx=0.1, rely=0.2)
-    tk.Label(about_window, text='Password Generator GUI\nVersion 4.0_23.12.09', justify='left').place(relx=0.2, rely=0.1)
+    tk.Label(about_window, text='Password Generator GUI\nVersion 4.0_24.03.29', justify='left').place(relx=0.2, rely=0.1)
     ttk.Button(about_window, text='github.com', 
                command=lambda: webbrowser.get('windows-default').open_new('https://github.com/oniyukai/Password-Generator')).place(relx=0.2, rely=0.6)
     ttk.Button(about_window, text='Exit', command=about_window_exit, style='style.TButton', 
@@ -67,8 +67,8 @@ def length_spinboxs_vcmd(length_spinboxes_entry): #限輸入數字並小於2字�
 
 #主視窗設定
 window = tk.Tk()
-window.title('Password Generator GUI v4.0_23.12.09')
-window.geometry(f'{668+(MAX_SECTIONS-3)*49}x275+{int((window.winfo_screenwidth()-800)/2)}+{int((window.winfo_screenheight()-500)/2)}')
+window.title('Password Generator GUI v4.0_24.03.29')
+window.geometry(f'{668+(MAX_SECTIONS-3)*49}x270+{int((window.winfo_screenwidth()-800)/2)}+{int((window.winfo_screenheight()-500)/2)}')
 window.resizable(False, False)
 window.protocol('WM_DELETE_WINDOW', func=lambda: sys.exit())
 
@@ -85,7 +85,7 @@ window.config(menu=window_menu)
 sets_label_var = tk.StringVar()
 sets_label_var.set(f'Several of Sets: 　　　　　1')
 tk.Label(textvariable=sets_label_var).grid(row=0, column=0, padx=10, sticky=tk.W)
-sets_scale = tk.Scale(from_=1, to=MAS_SETS, showvalue=False, length=MAX_SECTIONS*49-18, orient='horizontal', 
+sets_scale = tk.Scale(from_=1, to=MAX_SETS, showvalue=False, length=MAX_SECTIONS*49-18, orient='horizontal', 
                       command=lambda x: sets_label_var.set(f'Several of Sets: 　　　　　{sets_scale.get()}'))
 sets_scale.grid(row=0, column=1, padx=20, sticky=tk.E)
 
@@ -133,7 +133,7 @@ output_frame = tk.Frame(pady=5)
 output_frame.grid(row=0, column=2, rowspan=4)
 output_scrollbar = tk.Scrollbar(output_frame)
 output_scrollbar.pack(side='right', fill='y')
-output_text = tk.Text(output_frame, width=40, height=20, relief='flat', yscrollcommand=output_scrollbar.set)
+output_text = tk.Text(output_frame, font=('Consolas',10), width=40, height=17, relief='flat', yscrollcommand=output_scrollbar.set)
 output_text.pack()
 output_scrollbar.config(command=output_text.yview)
 
