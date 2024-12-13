@@ -1,0 +1,9 @@
+-F 包裝成單一檔案
+-D 包裝成相依性資料夾
+
+-c 僅使用命令列，不開啟視窗
+-w 僅使用使用者圖形介面，不開啟命令列
+
+
+pip install pyinstaller
+pyinstaller -F mypython.py -w
