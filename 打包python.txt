@@ -1,9 +1,16 @@
--F 包裝成單一檔案
--D 包裝成相依性資料夾
+--clean: 刪除先前的編譯結果
+
+-F(--onefile): 打包為單一的可執行文件
+-D: 包裝成相依性資料夾
+
+--upx-dir=path_to_upx:  UPX 工具進行可執行文件的壓縮
+--icon=your_icon.ico: 指定可執行文件的圖標
+--noconfirm: 避免在執行 PyInstaller 時出現確認提示
+
 
 -c 僅使用命令列，不開啟視窗
 -w 僅使用使用者圖形介面，不開啟命令列
 
 
 pip install pyinstaller
-pyinstaller -F mypython.py -w
+pyinstaller -F start_sever.py -c
