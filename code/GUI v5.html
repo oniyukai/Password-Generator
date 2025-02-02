@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Password Generator GUI</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <style>
+        :root {
+            --maxSegments: 3;
+        }
+        body {
+            font-family: Consolas, 'Courier New', 'Microsoft JhengHei', monospace;
+            margin: 16px 20px 8px;
+        }
+        .--disabled {
+            opacity: 0.5;
+            filter: grayscale(1);
+        }
+
+        /* Layout Styles */
+        header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        header div {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        main {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .controls {
+            flex: 1;
+            flex-basis: 420px;
+            margin-top: 24px;
+        }
+        .ctrl-section { margin-bottom: 16px; }
+
+        .output {
+            flex: 1;
+            flex-basis: 420px;
+            overflow: hidden;
+        }
+        
+        /* Component Styles */
+        button {
+            font-size: 14px;
+            font-family: Consolas, 'Courier New', 'Microsoft JhengHei', monospace;
+            height: 25px;
+        }
+        header button {
+            width: 132px;
+            margin-left: 8px;
+        }
+        .output button { width: 90px; }
+
+        input[type="range"] {
+            width: calc(54.5px * var(--maxSegments) - 35px);
+            height: 4px;
+            margin-left: 20px;
+            padding: 6px 0px;
+        }
+        input[type="number"] {
+            width: 48px;
+            text-align: center;
+        }
+        header input[type="number"] {
+            width: 128px;
+            padding: 2.5px 0px;
+            margin: 2px 0px 0px 8px;
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+        header input[type="number"]::-webkit-inner-spin-button,
+        header input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+        }
+        input[type="checkbox"] {
+            width: 48px;
+            margin-bottom: 8px;
+        }
+        .ctrl-filter-option input[type="checkbox"] {
+            width: 16px;
+            margin-top: 16px;
+        }
+        input[type="text"] {
+            width: 48px;
+            text-align: center;
+        }
+        .ctrl-filter-option input[type="text"] { width: 48%; }
+
+        .ctrl-section label { margin-right: 10px; }
+        .ctrl-include-option label { margin-right: 42px; }
+        .ctrl-include-option:last-child label { margin-right: 68px; }
+
+        .label-frame {
+            border: 2px solid rgb(211, 211, 211);
+            border-radius: 5px;
+            padding: 10px;
+            position: relative;
+            margin: 24px 16px 2px 2px;
+        }
+        .label-frame .label-frame-title {
+            position: absolute;
+            top: -14px;
+            background-color: white;
+            padding: 0 5px;
+            white-space: nowrap;
+        }
+
+        .toggle-button {
+            background-color: rgb(239, 239, 239);
+            border: 1px solid rgb(118, 118, 118);
+            display: inline-block;
+            user-select: none;
+            border-radius: 4px;
+            padding: 3px 8px;
+            align-items: center;
+            font-size: 14px;
+        }
+        .toggle-button--on {
+            color: white;
+            background-color: #0075FF;
+            border: 1px solid #0075FF;
+            font-weight: bold;
+        }
+        *:not(.--disabled) > .toggle-button:hover { filter: brightness(0.95); }
+        *:not(.--disabled) > .toggle-button:active { filter: brightness(1.05); }
+        
+        .mimics-textarea {
+            width: auto;
+            height:  max(calc(100vh - 200px), 420px);
+            margin-top: 6px;
+            overflow: auto;
+            overflow-wrap: break-word;
+            line-break: anywhere;
+            white-space: pre;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <!-- v5.0 25.01.24 -->
+            <h1>Password Generator&nbsp</h1>
+            <span>
+                GUI Version 5.0_25.01.24
+                <br>
+                <a href="https://github.com/oniyukai/Password-Generator">Github.com</a>
+            </span>
+        </div>
+        <div>
+            <button onclick="window.location.href = window.location.href">↻ Reload Page</button>
+            <input type="number" id="maxSetsInput">
+            <input type="number" id="maxSegmentsInput">
+            <input type="number" id="maxLengthInput">
+        </div>
+    </header>
+    
+    <main>
+        <div class="controls">
+            <div class="ctrl-section">
+                <label id="setsLabel"></label>
+                <input type="range" id="setsSlider" min="1" value="1" oninput="setsSliderOninput()">
+            </div>
+
+            <div class="ctrl-section">
+                <label id="segmentsLabel"></label>
+                <input type="range" id="segmentsSlider" min="1" value="1" oninput="segmentsSliderOninput()">
+            </div>
+
+            <div class="ctrl-section" id="lengthsDiv">
+                <label id="lengthsLabel"></label>
+            </div>
+
+            <div class="label-frame" id="includeFrame">
+                <div class="label-frame-title">Include</div>
+                <div class="ctrl-include-option">
+                </div>
+                <div class="ctrl-include-option">
+                </div>
+                <div class="ctrl-include-option">
+                </div>
+                <div class="ctrl-include-option">
+                </div>
+                <div class="ctrl-include-option">
+                </div>
+                <div class="ctrl-include-option" id="includeAddsDiv">
+                </div>
+            </div>
+
+            <div class="label-frame">
+                <div class="label-frame-title">Filter</div>
+                <label class="ctrl-filter-option --disabled" >
+                    <input type="checkbox" id="filterRepChk">
+                    <input type="number" id="filterRepIntInput" placeholder="ALL" disabled>
+                    each Interval Without
+                    <input type="number" id="filterRepTimesInput" placeholder="2" disabled>
+                    Repetition Times
+                    <label class="toggle-button" id="filterRepTogbtn"><input type="checkbox" id="filterRepTogbtnChk" hidden disabled>Ignore Case</label>
+                </label>
+                <br>
+                <label class="ctrl-filter-option --disabled">
+                    <input type="checkbox" id="filterSeqletChk">
+                    <input type="number" id="filterSeqletInput" placeholder="MAX" disabled>
+                    Sequential Letters
+                    <label class="toggle-button" id="filterSeqletTogbtn"><input type="checkbox" id="filterSeqletTogbtnChk" hidden disabled>Ignore Case</label>
+                </label>
+                <br>
+                <label class="ctrl-filter-option --disabled">
+                    <input type="checkbox" id="filterSeqnumChk">
+                    <input type="number" id="filterSeqnumInput" placeholder="MAX" disabled>
+                    Sequential Numbers
+                </label>
+                <br>
+                <label class="ctrl-filter-option --disabled">
+                    <input type="checkbox" id="filterExcludeChk">
+                    Exclude Characters or Strings
+                    <input type="text" id="filterExcludeInput" placeholder="Default enter exclude characters, to exclude strings use ${...}&" disabled>
+                </label>
+            </div>
+        </div>
+
+        <div class="output">
+            <div class="label-frame">
+                <div class="label-frame-title">
+                    <button onclick="generateBtnClick()">Generate</button>
+                    <button onclick="clearBtnClick()">Clear</button>
+                    <label class="toggle-button" id="outputTogbtn"><input type="checkbox" id="outputTogbtnChk" hidden>Word Wrap</label>
+                </div>
+                <div class="mimics-textarea" id="outputText">
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        const maxSetsInput = document.getElementById("maxSetsInput");
+        const maxSegmentsInput = document.getElementById("maxSegmentsInput");
+        const maxLengthInput = document.getElementById("maxLengthInput");
+        const setsLabel = document.getElementById("setsLabel");
+        const setsSlider = document.getElementById("setsSlider");
+        const segmentsLabel = document.getElementById("segmentsLabel");
+        const segmentsSlider = document.getElementById("segmentsSlider");
+        const lengthsDiv = document.getElementById("lengthsDiv");
+        function lengthsLabel () { return document.getElementById("lengthsLabel"); }
+        const includeDivs = Array.from(document.getElementById("includeFrame").children).slice(1, 6);
+            includeDivs.labelsInnerHTML = ["Numbers (0-9)", "Lowercase (a-z)", "Uppercase (A-Z)", "!@#$%^&*-_=+?", "`~()[]{}\\|;':\",<.>/"];
+            includeDivs.chkValues = ["0123456789", "abcdefghijklmnopqrstuvwxyz", "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "!@#$%^&*-_=+?", "`~()[]{}\\|;':\",<.>/"];
+        const includeAddsDiv = document.getElementById("includeAddsDiv");
+        const filterRepChk = document.getElementById("filterRepChk");
+        const filterRepIntInput = document.getElementById("filterRepIntInput");
+        const filterRepTimesInput = document.getElementById("filterRepTimesInput");
+        const filterRepTogbtn = document.getElementById("filterRepTogbtn");
+        const filterRepTogbtnChk = document.getElementById("filterRepTogbtnChk");
+        const filterSeqletChk = document.getElementById("filterSeqletChk");
+        const filterSeqletInput = document.getElementById("filterSeqletInput");
+        const filterSeqletTogbtn = document.getElementById("filterSeqletTogbtn");
+        const filterSeqletTogbtnChk = document.getElementById("filterSeqletTogbtnChk");
+        const filterSeqnumChk = document.getElementById("filterSeqnumChk");
+        const filterSeqnumInput = document.getElementById("filterSeqnumInput");
+        const filterExcludeChk = document.getElementById("filterExcludeChk");
+        const filterExcludeInput = document.getElementById("filterExcludeInput");
+        const outputTogbtn = document.getElementById("outputTogbtn");
+        const outputTogbtnChk = document.getElementById("outputTogbtnChk");
+        const outputText = document.getElementById("outputText");
+
+        // 元素函式
+        function elementsDisableChange(checkbox, elements) {
+            const disabledState = !checkbox.checked;
+            const father = checkbox.parentNode;
+            if (disabledState) father.classList.add("--disabled");
+            else father.classList.remove("--disabled");
+
+            for (const element of elements){
+                element.disabled = disabledState;
+            }
+        }
+
+        function togbtnCheckedChange(checkbox, togbtn) {
+            if (checkbox.checked) togbtn.classList.add("toggle-button--on");
+            else togbtn.classList.remove("toggle-button--on");
+        }
+
+        // 元素事件函式
+        function updateMaxSets () {
+            if (maxSetsInput.value != "") maxSets = Math.max(maxSetsInput.value, 9);
+            maxSetsInput.value = "";
+            maxSetsInput.placeholder = `Max Sets: ${maxSets}`;
+            setsSlider.max = maxSets;
+            setsSlider.oninput();
+        }
+
+        function updateMaxSegments () {
+            if (maxSegmentsInput.value != "") maxSegments = Math.max(maxSegmentsInput.value, 3);
+            segmentsSlider.max = maxSegments;
+            maxSegmentsInput.value = "";
+            maxSegmentsInput.placeholder = `Max Segments: ${maxSegments}`;
+            document.documentElement.style.setProperty('--maxSegments', maxSegments);
+
+            lengthsDiv.innerHTML = `<label id="lengthsLabel"></label>`;
+            includeAddsDiv.innerHTML = "<label>Input Additions:</label>";
+            
+            for (let i=0; i<5; i++){
+                const label = document.createElement("label");
+                label.innerHTML = includeDivs.labelsInnerHTML[i].padEnd(19, "x").replace(/x/g, "&nbsp;");
+                includeDivs[i].innerHTML = "";
+                includeDivs[i].appendChild(label);
+            }
+            for (let i=0; i<maxSegments; i++) {
+                const inputNumber = document.createElement("input");
+                inputNumber.type = "number";
+                inputNumber.min = 0;
+                inputNumber.max = 9;
+                inputNumber.value = 1;
+                inputNumber.oninput = function() { inputNumber.value = Math.min(inputNumber.value, maxLength); };
+                inputNumber.onchange = lengthsInputOnchange;
+                lengthsDiv.appendChild(inputNumber);
+
+                const inputText = document.createElement("input");
+                inputText.type = "text";
+                includeAddsDiv.appendChild(inputText);
+
+                for (let j=0; j<5; j++){
+                    const inputChk = document.createElement("input");
+                    inputChk.type = "checkbox";
+                    includeDivs[j].appendChild(inputChk);
+                }
+            }
+            lengthsInputOnchange();
+            segmentsSlider.oninput();
+        }
+
+        function updateMaxLength () {
+            if (maxLengthInput.value != "") maxLength = Math.max(maxLengthInput.value, 1);
+            maxLengthInput.value = "";
+            maxLengthInput.placeholder = `Max Length: ${maxLength}`;
+            updateMaxSegments();
+        }
+
+        function setsSliderOninput () { 
+            setsLabel.innerHTML = `Quantity of Sets:${String(setsSlider.value).padStart(6, "_").replace(/_/g, "&nbsp;")}`;
+        }
+
+        function segmentsSliderOninput () {
+            segmentsLabel.innerHTML = `Quantity of Segments:${String(segmentsSlider.value).padStart(2, "_").replace(/_/g, "&nbsp;")}`;
+            const lengthsInputs = Array.from(lengthsDiv.getElementsByTagName("input"));
+            const includeAddsInputs = Array.from(includeAddsDiv.getElementsByTagName("input"));
+            for (let i=0; i<maxSegments; i++) {
+                let disabledState = !(i < segmentsSlider.value);
+                lengthsInputs[i].disabled = disabledState;
+                includeAddsInputs[i].disabled = disabledState;
+                for (let j=0; j<5; j++) {
+                    Array.from(includeDivs[j].getElementsByTagName("input"))[i].disabled = disabledState;
+                }
+            }
+            lengthsInputOnchange();
+        }
+
+        function lengthsInputOnchange () {
+            const inputValues = Array.from(lengthsDiv.getElementsByTagName("input")).map(input => parseInt(input.value));
+            lengthsValuesTotal = 0;
+            for (let i=0; i<segmentsSlider.value; i++) {
+                lengthsValuesTotal += inputValues[i];
+            }
+            lengthsLabel().innerHTML = `Segment Lengths:${("(Σ:" + String(lengthsValuesTotal)).padStart(7, "_").replace(/_/g, "&nbsp;")})`;
+            if (filterRepIntInput.value != "") filterRepIntInput.value = Math.min(filterRepIntInput.value, lengthsValuesTotal);
+            if (filterSeqletInput.value != "") filterSeqletInput.value = Math.min(filterSeqletInput.value, lengthsValuesTotal);
+            if (filterSeqnumInput.value != "") filterSeqnumInput.value = Math.min(filterSeqnumInput.value, lengthsValuesTotal);
+        }
+
+        function generateBtnClick () {
+            outputText.innerHTML = "<br>" + outputText.innerHTML;
+            const lengthsValues = Array.from(lengthsDiv.getElementsByTagName("input")).map(input => input.value);
+            let charsets = [];
+            for (let segment=0; segment<segmentsSlider.value; segment++) {
+                let charset = "";
+                for (let j=0; j<5; j++) {
+                    const includeChk = Array.from(includeDivs[j].getElementsByTagName("input"))[segment];
+                    if (includeChk.checked) charset += includeDivs.chkValues[j];
+                }
+                charset += Array.from(includeAddsDiv.getElementsByTagName("input"))[segment].value;
+                if (filterExcludeChk.checked) {
+                    const extractedChar = filterExcludeInput.value.replace(/\${.*?}&/g, "");
+                    charset = charset.split("").filter(char => !extractedChar.includes(char)).join("");
+                }
+                if (charset == "") charset = " ";
+                charsets.push(charset);
+            }
+            for (let setTimes=0; setTimes<setsSlider.value; setTimes++) {
+                let password;
+                for (let filterTimes=0; filterTimes < 256; filterTimes++){
+                    password = "";
+                    for (let segment=0; segment<segmentsSlider.value; segment++) {
+                        password += randomChoices(charsets[segment], lengthsValues[segment]);
+                    }
+                    if (passwordPassFilter(password)) break;
+                    if (filterTimes == 255) {
+                        outputText.innerHTML = `<span style="color: red;">Over Filtering</span><br>${outputText.innerHTML}`;
+                        return;
+                    }
+                }
+                const newSpan = document.createElement("span");
+                newSpan.style = setTimes%2 ? "color: #0075FF" : "color: #4FC1FF";
+                newSpan.textContent = password;
+                outputText.innerHTML = "<br>" + outputText.innerHTML;
+                outputText.insertBefore(newSpan, outputText.firstChild);
+            }
+        }
+        function randomChoices (charset, k) {
+            let ArrayType, maxValue;
+            if (charset.length <= 255) {
+                ArrayType = Uint8Array;
+                maxValue = 256;
+            } else if (charset.length <= 65535) {
+                ArrayType = Uint16Array;
+                maxValue = 65536;
+            } else {
+                ArrayType = Uint32Array;
+                maxValue = 4294967296;
+            }
+            const passwordChars = [];
+            const charsetLength = charset.length;
+            for (let i = 0; i < k; i++) {
+                let randomValue;
+                while (true) {
+                    const tempArray = new ArrayType(1);
+                    crypto.getRandomValues(tempArray);
+                    randomValue = tempArray[0] - (maxValue % charsetLength);
+                    if (randomValue >= 0) break;
+                }
+                passwordChars.push(charset[randomValue % charsetLength]);
+            }
+            return passwordChars.join("");
+        }
+        function passwordPassFilter (password) {
+            if (filterRepChk.checked && lengthsValuesTotal>1) {
+                const str = filterRepTogbtnChk.checked ? password.toLowerCase() : password;
+                const intervalLength = (filterRepIntInput.value) == "" ? lengthsValuesTotal : parseInt(filterRepIntInput.value, 10);
+                const maxRepetition = (filterRepTimesInput.value) == "" ? 2 : parseInt(filterRepTimesInput.value, 10);
+                const charCount = {};
+                for (let i = 0; i < intervalLength; i++) {
+                    const char = str[i];
+                    charCount[char] = (charCount[char] || 0) + 1;
+                }
+                if (Object.values(charCount).some(count => count >= maxRepetition)) return false;
+                for (let i = intervalLength; i < lengthsValuesTotal; i++) {
+                    const newChar = str[i];
+                    const oldChar = str[i - intervalLength];
+                    charCount[newChar] = (charCount[newChar] || 0) + 1;
+                    charCount[oldChar] -= 1;
+                    if (charCount[newChar] >= maxRepetition) return false;
+                }
+            }
+            if (filterSeqletChk.checked && lengthsValuesTotal>1) {
+                const sequentialLen = (filterSeqletInput.value == "") ? Math.min(lengthsValuesTotal, 26) : parseInt(filterSeqletInput.value, 10);
+                if (filterSeqletTogbtnChk.checked) {
+                    if (hasSequential(password.toLowerCase(), sequentialLen, "abcdefghijklmnopqrstuvwxyz")) return false;
+                } else {
+                    if (hasSequential(password, sequentialLen, "abcdefghijklmnopqrstuvwxyz")) return false;
+                    if (hasSequential(password, sequentialLen, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")) return false;
+                }
+            }
+            if (filterSeqnumChk.checked && lengthsValuesTotal>1) {
+                const sequentialLen = (filterSeqnumInput.value == "") ? Math.min(lengthsValuesTotal, 10) : parseInt(filterSeqnumInput.value, 10);
+                if (hasSequential(password, sequentialLen, "0123456789")) return false;
+            }
+            if (filterExcludeChk.checked) {
+                const matches = Array.from(filterExcludeInput.value.matchAll(/\${(.*?)}&/g))
+                    .map(match => match[1])
+                    .filter(content => content !== "");
+                const hasMatch = matches.some(substring => password.includes(substring));
+                if (hasMatch) return false;
+            }
+            return true;
+        }
+        function hasSequential (password, eachWindowLen, ascending) {
+            const descending = ascending.split('').reverse().join('');
+            for (let i=0; i<= ascending.length - eachWindowLen; i++){
+                const ascendingWindow = ascending.slice(i, i + eachWindowLen);
+                const descendingWindow = descending.slice(i, i + eachWindowLen);
+                if (password.includes(ascendingWindow)) return true;
+                if (password.includes(descendingWindow)) return true;
+            }
+            return false;
+        }
+        
+        function clearBtnClick () { outputText.innerHTML = ""; }
+
+        // 元素事件監聽器
+        maxSetsInput.addEventListener("input", function () { this.value = this.value.replace(/[^0-9]/g, ""); });
+        maxSetsInput.addEventListener("keydown", function (event) {
+            if (event.key === "Enter" && this.value != "") updateMaxSets();
+        });
+        
+        maxSegmentsInput.addEventListener("input", function () {
+            this.value = this.value.replace(/[^0-9]/g, "");
+            if (this.value != "") this.value = Math.min(this.value, 16);
+        });
+        maxSegmentsInput.addEventListener("keydown", function (event) {
+            if (event.key === "Enter" && this.value != "") updateMaxSegments();
+        });
+
+        maxLengthInput.addEventListener("input", function () { this.value = this.value.replace(/[^0-9]/g, ""); });
+        maxLengthInput.addEventListener("keydown", function (event) {
+            if (event.key === "Enter" && this.value != "") updateMaxLength();
+        });
+
+        filterRepIntInput.addEventListener("input", function () {
+            this.value = this.value.replace(/[^0-9]/g, "");
+            if (this.value != "") this.value = Math.max(2, Math.min(this.value, lengthsValuesTotal));
+        });
+        filterRepTimesInput.addEventListener("input", function () {
+            this.value = this.value.replace(/[^0-9]/g, "");
+            if (this.value != "") this.value = Math.max(2, Math.min(this.value, lengthsValuesTotal));
+        });
+        filterRepChk.addEventListener("change", function () {
+            elementsDisableChange(this, [filterRepIntInput, filterRepTimesInput, filterRepTogbtnChk]);
+        });
+        filterRepTogbtnChk.addEventListener("change", function () { togbtnCheckedChange(this, filterRepTogbtn); });
+
+        filterSeqletInput.addEventListener("input", function () {
+            this.value = this.value.replace(/[^0-9]/g, "");
+            if (this.value != "") this.value = Math.max(2, Math.min(this.value, lengthsValuesTotal, 26));
+        });
+        filterSeqletChk.addEventListener("change", function () {
+            elementsDisableChange(this, [filterSeqletInput, filterSeqletTogbtnChk]);
+        });
+        filterSeqletTogbtnChk.addEventListener("change", function () { togbtnCheckedChange(this, filterSeqletTogbtn); });
+
+        filterSeqnumInput.addEventListener("input", function () {
+            this.value = this.value.replace(/[^0-9]/g, "");
+            if (this.value != "") this.value = Math.max(2, Math.min(this.value, lengthsValuesTotal, 10));
+        });
+        filterSeqnumChk.addEventListener("change", function () { elementsDisableChange(this, [filterSeqnumInput]); });
+
+        filterExcludeChk.addEventListener("change", function () { elementsDisableChange(this, [filterExcludeInput]); });
+
+        outputTogbtnChk.addEventListener("change", function () {
+            outputText.style.whiteSpace = this.checked ? "pre-wrap" : "pre";
+            togbtnCheckedChange(this, outputTogbtn);
+        });
+
+        // 初始化
+        let maxSets = 9;
+        let maxSegments = 3;
+        let maxLength = 64;
+        let lengthsValuesTotal;
+        updateMaxSets();
+        // updateMaxSegments();
+        updateMaxLength();
+    </script>
+</body>
+</html>
