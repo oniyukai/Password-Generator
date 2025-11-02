@@ -149,10 +149,10 @@
 <body>
     <header>
         <div>
-            <!-- v5.0 25.01.24 -->
+            <!-- v5.0 25.10.29 -->
             <h1>Password Generator&nbsp</h1>
             <span>
-                GUI Version 5.0_25.01.24
+                GUI Version 5.0_25.10.29
                 <br>
                 <a href="https://github.com/oniyukai/Password-Generator">Github.com</a>
             </span>
@@ -416,30 +416,37 @@
             }
         }
         function randomChoices (charset, k) {
-            let ArrayType, maxValue;
-            if (charset.length <= 255) {
-                ArrayType = Uint8Array;
-                maxValue = 256;
-            } else if (charset.length <= 65535) {
-                ArrayType = Uint16Array;
-                maxValue = 65536;
-            } else {
-                ArrayType = Uint32Array;
-                maxValue = 4294967296;
+            if (k === 0) {
+                return "";
             }
-            const passwordChars = [];
+            if (charset.length === 0) {
+                throw new Error("如果 'k' 大於 0，字符集 'charset' 不能為空。");
+            }
+            let randomArray, maxRandomValueCount;
             const charsetLength = charset.length;
+            if (charsetLength <= 256) {
+                randomArray = new Uint8Array(1);
+                maxRandomValueCount = 256;
+            } else if (charsetLength <= 65536) {
+                randomArray = new Uint16Array(1);
+                maxRandomValueCount = 65536;
+            } else if (charsetLength <= 4294967296) {
+                randomArray = new Uint32Array(1);
+                maxRandomValueCount = 4294967296;
+            } else {
+                throw new Error("字符集 'charset' 的長度超過最大支持值 (2^32)。");
+            }
+            const limit = maxRandomValueCount - (maxRandomValueCount % charsetLength);
+            const result = [];
             for (let i = 0; i < k; i++) {
                 let randomValue;
-                while (true) {
-                    const tempArray = new ArrayType(1);
-                    crypto.getRandomValues(tempArray);
-                    randomValue = tempArray[0] - (maxValue % charsetLength);
-                    if (randomValue >= 0) break;
-                }
-                passwordChars.push(charset[randomValue % charsetLength]);
+                do {
+                    crypto.getRandomValues(randomArray);
+                    randomValue = randomArray[0];
+                } while (randomValue >= limit);
+                result.push(charset[randomValue % charsetLength]);
             }
-            return passwordChars.join("");
+            return result.join("");
         }
         function passwordPassFilter (password) {
             if (filterRepChk.checked && lengthsValuesTotal>1) {
