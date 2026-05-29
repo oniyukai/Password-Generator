@@ -3,7 +3,7 @@ import random
 ASKINGS = ('Whether to include 0-9? [Y/N] ', 'Whether to include a-z? [Y/N] ', 'Whether to include A-Z? [Y/N] ', 'Whether to include !@#$%^&* ? [Y/N] ')
 INCLUDE = ('0123456789', 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '!@#$%^&*')
 MAX_SECTION = 4
-print('----\nPassword Generator\nVersion 4.0_23.08.05\nhttps://github.com/oniyukai/Password-Generator\n----')
+print('----\nPassword Generator\nGen 4 v1.0_26.05.30+4\nhttps://github.com/oniyukai/Password-Generator\n----')
 
 while True:
     sets = int(input('\n\nInput several sets of generated passwords: '))

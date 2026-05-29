@@ -40,7 +40,7 @@ def about_cmd(): #關閉'About'功能，開啟'about_window'視窗
     about_window.resizable(False, False)
     about_window.protocol('WM_DELETE_WINDOW', func=about_window_exit)
     tk.Label(about_window, bitmap='info').place(relx=0.1, rely=0.2)
-    tk.Label(about_window, text='Password Generator GUI\nVersion 4.0_24.03.29', justify='left').place(relx=0.2, rely=0.1)
+    tk.Label(about_window, text='Password Generator\nGen 4 GUI v1.0_26.05.30+6', justify='left').place(relx=0.2, rely=0.1)
     ttk.Button(about_window, text='github.com', 
                command=lambda: webbrowser.get('windows-default').open_new('https://github.com/oniyukai/Password-Generator')).place(relx=0.2, rely=0.6)
     ttk.Button(about_window, text='Exit', command=about_window_exit, style='style.TButton', 
@@ -67,7 +67,7 @@ def length_spinboxs_vcmd(length_spinboxes_entry): #限輸入數字並小於2字�
 
 #主視窗設定
 window = tk.Tk()
-window.title('Password Generator GUI v4.0_24.03.29')
+window.title('Password Generator Gen 4 GUI')
 window.geometry(f'{668+(MAX_SECTIONS-3)*49}x270+{int((window.winfo_screenwidth()-800)/2)}+{int((window.winfo_screenheight()-500)/2)}')
 window.resizable(False, False)
 window.protocol('WM_DELETE_WINDOW', func=lambda: sys.exit())

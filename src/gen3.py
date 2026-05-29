@@ -10,12 +10,12 @@ def click_generate():
 
 # tkinter物件
 window = tk.Tk()
-window.title('Password Generator GUI v3.1_23.08.06')
+window.title('Password Generator Gen 3')
 window.geometry('614x253+400+300')
 window.resizable(False,False)
 window.config(bg='#333333')
 
-tk.Label(text='Version 3.1_23.08.06    Made by YUKAI', bg='#333333', fg='#CCFFF7', font=15).grid(row=0, column=0, columnspan=2)
+tk.Label(text='Gen 3 v1.1_26.05.30+3    Made by YUKAI', bg='#333333', fg='#CCFFF7', font=15).grid(row=0, column=0, columnspan=2)
 tk.Label(text=' Enter several sets:', bg='#262626', fg='#ffffff', font=15, width=15, anchor='w').grid(row=1, column=0)
 sets_entry = tk.Entry(bg='#ffffff', fg='#000000', font=15, width=20, justify='right')
 sets_entry.grid(row=1, column=1)
