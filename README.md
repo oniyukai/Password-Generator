@@ -1,47 +1,56 @@
-# Password-Generator
+## Password Generator
+A open-source app that can generate random passwords based on your preferences.
 
-Password Generator is a Python application that enables you to create secure and customized passwords. This repository contains different versions of the generator, each with its own unique features and functionality.
-> [Chinese README.md](README_zh.md)
+Password Generator is a free and open-source app that enables you to create secure and customized passwords. It does not contain any trackers and does not collect any data.
 
-## Features
+## Features of The Latest Version
 
-- Generate strong and random passwords with customizable settings.
-- Choose whether to include numbers (0-9), lowercase letters (a-z), uppercase letters (A-Z), and special characters (!@#$%^&*) in your passwords.
-- Specify the number of sets and length for each set of generated passwords.
-- Include additional characters of your choice.
-- Graphical User Interface (GUI) versions available for easy and intuitive use.
+**Customizable Length and Complexity:**
+- Adjust the number of password sets generated.
+- Control the number of segments within each password.
+- Set individual lengths for each segment.
+- Include or exclude various character types such as numbers, lowercase letters, uppercase letters, and special symbols.
+- Allows adding custom characters in each segment.
 
-## Installation and Usage
+**Filtering Options:**
+- Prevent repetition of characters within a given interval.
+- Exclude sequential letters/numbers.
+- Exclude specific characters or strings.
 
-1. Clone or download this repository to your local machine.
-2. Navigate to the directory where you've saved the repository.
-3. Run the desired Python script to launch the password generator.
+**Use HTML:**
+- Intuitive user interface.
+- Responsive Design to be responsive and usable on various screen sizes.
+- Each system can be used as long as it has a browser.
+- Can be translated by browser for language or theme modification.
 
-## Versions and Differences
+## Versions
 
-### v2.2_23.08.05.py
+**GUI Version 5**
+- This version changes to HTML, so jusy Download and Open in Browser.
+- Added filters, and some features.
 
-This version is a command-line password generator with basic features and supports Chinese. It allows you to generate passwords based on your preferences for numbers, lowercase letters, uppercase letters, and special characters.
+<details>
+<summary>Older Versions</summary>
 
-### GUI v3.1_23.08.06.py
+**GUI Version 4**
+- It's just the UI of Version 4 for Python.
 
-An enhanced version featuring a graphical user interface (GUI) and supporting Chinese. Easily customize password settings and generate secure passwords with just a few clicks.
+**Version 4**
+- This command line version for Python introduces the ability to structure passwords with multiple subsections. Customize the length and character inclusion of each subsection to create highly personalized passwords.
 
-### v4.0_23.08.05.py
+**GUI Version 3**
+- It's just the UI of Version 2 for Python.
 
-This version introduces the ability to create complex password structures with multiple sections. Customize each section's length and character inclusion to create highly tailored passwords.
+**Version 2**
+- This version is a command line password generator for Python or C++ with basic functionality. You can generate passwords based on your preferences for numbers, lowercase letters, uppercase letters and special characters.
+- Only the uploaded Python version is in GitHub.
 
-### GUI v4.0_23.08.11.py
+**Version 1**
+- A `.xlsm` file with limited customized passwords, just open it with Excel 2007+.
+- Not uploaded to GitHub.
 
-The latest GUI version that offers even more flexibility. Generate passwords with multiple sections and varying lengths, and include characters of your choice.
+</details>
 
-## Common Usage Errors
+## License
 
-While using the password generator, you may encounter the following common issues:
-
-- **ValueError**: Occurs when you input invalid characters or lengths.
-- **Input Error**: Prompted to re-enter a response when input falls outside the allowed range.
-
-## Acknowledgments
-
-This project was created by [YUKAI](https://github.com/oniyukai). Special thanks to the open-source community for their contributions and support.
+The [code](https://github.com/oniyukai/Password-Generator) is licensed under the MIT License.
